@@ -42,6 +42,7 @@ logger = logging.getLogger(__name__)
 
 # Environment variables
 EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY')
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')  # For Render deployment
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
 GOOGLE_CLIENT_ID = '181639765177-3tnbuada63aokj13vpjr7m2lh5bvvqpb.apps.googleusercontent.com'
 JWT_SECRET = os.environ.get('JWT_SECRET', 'arcana-secret-key-change-in-production')
@@ -49,8 +50,8 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'arcana-secret-key-change-in-productio
 # Configure Stripe
 stripe.api_key = STRIPE_API_KEY
 
-# Configure litellm
-litellm.api_key = EMERGENT_LLM_KEY
+# Configure litellm - use OpenAI key if available, otherwise Emergent key
+LLM_API_KEY = OPENAI_API_KEY or EMERGENT_LLM_KEY
 
 # Pydantic models for Stripe responses
 class CheckoutSessionResponse(BaseModel):
@@ -371,7 +372,7 @@ Beispiel-Struktur:
                 {"role": "system", "content": "Du bist ein erfahrener Tarot-Berater. Deine Deutungen sind KONKRET, PRAKTISCH und ALLTAGSBEZOGEN. Du gibst klare Hinweise und Handlungsempfehlungen. Vermeide zu viel Philosophie - sei direkt und hilfreich."},
                 {"role": "user", "content": base_instruction}
             ],
-            api_key=EMERGENT_LLM_KEY
+            api_key=LLM_API_KEY
         )
         
         return response.choices[0].message.content
