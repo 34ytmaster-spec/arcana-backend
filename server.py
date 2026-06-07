@@ -271,16 +271,22 @@ async def get_or_create_device(device_id: str):
     return device
 
 async def generate_card_image(card_name: str, keywords: str) -> str:
-    """Generate a mystical tarot card image using Gemini"""
+    """Generate a mystical tarot card image using Pollinations.ai (FREE)"""
     try:
-        # Use litellm with Gemini for image generation
-        # Note: For production, you may want to use a dedicated image generation API
-        prompt = f"Erstelle ein mystisches, dunkles Tarot-Karten-Bild für '{card_name}'. Schlüsselworte: {keywords}. Der Stil sollte dunkel, geheimnisvoll und spirituell sein mit goldenen und violetten Akzenten. Keine Texte auf dem Bild."
+        # Use Pollinations.ai - completely free, no API key needed
+        prompt = f"mystical dark tarot card {card_name}, {keywords}, gothic style, gold and purple accents, magical, ethereal, no text"
         
-        # For now, return None as image generation requires special setup
-        # The app will use fallback placeholder images
-        logger.info(f"Image generation requested for: {card_name}")
-        return None
+        # URL encode the prompt
+        import urllib.parse
+        encoded_prompt = urllib.parse.quote(prompt)
+        
+        # Pollinations.ai returns an image directly from this URL
+        image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=512&height=768&nologo=true"
+        
+        logger.info(f"Generated image URL for {card_name}: {image_url}")
+        
+        # Return the URL directly - frontend will use this as image source
+        return image_url
     except Exception as e:
         logger.error(f"Error generating card image: {e}")
         return None
