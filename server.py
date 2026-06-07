@@ -174,7 +174,7 @@ class CardResponse(BaseModel):
     name_de: str
     arcana_type: str
     keywords_de: str
-    image_base64: Optional[str] = None
+    image_base64: Optional[str] = None  # Can be base64 data or a URL
 
 class InterpretationRequest(BaseModel):
     device_id: str
